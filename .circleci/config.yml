@@ -22,7 +22,7 @@ jobs:
           at: .
       - run:
           name: Tests
-          command: dotnet test -v normal --configuration Release -f netcoreapp2.1 test/Feree.Option.Tests/
+          command: dotnet test -v normal --configuration Release -f netcoreapp2.2 test/Feree.Option.Tests/
   nuget:
     working_directory: ~/build
     docker:
