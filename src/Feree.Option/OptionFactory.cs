@@ -2,7 +2,7 @@
 {
     public static class OptionFactory
     {
-        public static IOption<T> Some<T>(T value) => new Some<T>(value);
-        public static IOption<T> None<T>() => new None<T>();
+        public static Option<T> Some<T>(T value) => new Some<T>(value);
+        public static Option<T> None<T>() => new None<T>();
     }
 }

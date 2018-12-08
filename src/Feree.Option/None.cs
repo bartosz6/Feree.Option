@@ -3,19 +3,15 @@ using System.Threading.Tasks;
 
 namespace Feree.Option
 {
-    public abstract class None
-    {
-    }
-    
-    public sealed class None<T> : None, IOption<T>
+    public sealed class None<T> : Option<T>
     {
         internal None()
         {
         }
 
-        public IOption<TOut> Bind<TOut>(Func<T, IOption<TOut>> next) => new None<TOut>();
+        public override Option<TOut> Bind<TOut>(Func<T, Option<TOut>> next) => new None<TOut>();
 
-        public Task<IOption<TOut>> BindAsync<TOut>(Func<T, Task<IOption<TOut>>> next) =>
-            Task.FromResult((IOption<TOut>) new None<TOut>());
+        public override Task<Option<TOut>> BindAsync<TOut>(Func<T, Task<Option<TOut>>> next) =>
+            Task.FromResult((Option<TOut>) new None<TOut>());
     }
 }

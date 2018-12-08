@@ -3,10 +3,7 @@ using System.Threading.Tasks;
 
 namespace Feree.Option
 {
-    public abstract class Some
-    {
-    }
-    public sealed class Some<T> : Some, IOption<T>
+    public sealed class Some<T> : Option<T>
     {
         public T Value { get; }
 
@@ -14,11 +11,10 @@ namespace Feree.Option
 
         public static implicit operator T(Some<T> some) => some.Value;
         
-        public static explicit operator Some<T>(T value) => new Some<T>(value);
-        
         public override string ToString() => Value.ToString();
 
-        public IOption<TOut> Bind<TOut>(Func<T, IOption<TOut>> next) => next(Value);
-        public Task<IOption<TOut>> BindAsync<TOut>(Func<T, Task<IOption<TOut>>> next) => next(Value);
+        public override Option<TOut> Bind<TOut>(Func<T, Option<TOut>> next) => next(Value) ?? new None<TOut>();
+
+        public override async Task<Option<TOut>> BindAsync<TOut>(Func<T, Task<Option<TOut>>> next) => await next(Value) ?? new None<TOut>();
     }
 }
