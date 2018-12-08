@@ -1,0 +1,62 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/build
+    docker:
+      - image: microsoft/dotnet:sdk
+    steps:
+      - checkout
+      - run:
+          name: Build solution
+          command: dotnet build --configuration Release src
+      - persist_to_workspace:
+          root: .
+          paths: 
+            - ./*
+  unit tests:
+    working_directory: ~/build
+    docker:
+      - image: microsoft/dotnet:sdk
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Tests
+          command: dotnet test -v normal --configuration Release -f netcoreapp2.1 test/Feree.Option.Tests/
+  nuget:
+    working_directory: ~/build
+    docker:
+      - image: mono:latest
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Update nuget
+          command: nuget update -self
+      - run:
+          name: Install git
+          command: apt-get update && apt-get install -y git
+      - run:
+          name: Pack and publish
+          command: |
+            version=$(git tag --list | sort -Vr | head -1)
+            nuget pack package/Feree.Option.nuspec -properties Configuration=Release -Version $version
+            nuget setApiKey $nugetApiKey
+            nuget push Feree.Option.$version.nupkg -Source https://api.nuget.org/v3/index.json
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - unit tests:
+          requires:
+            - build
+      - integration tests:
+          requires:
+            - build
+      - nuget:
+          filters:
+            branches:
+              only: deploy
+          requires:
+            - unit tests
