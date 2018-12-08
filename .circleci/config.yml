@@ -51,9 +51,6 @@ workflows:
       - unit tests:
           requires:
             - build
-      - integration tests:
-          requires:
-            - build
       - nuget:
           filters:
             branches:
