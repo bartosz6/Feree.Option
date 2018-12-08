@@ -8,7 +8,7 @@ jobs:
       - checkout
       - run:
           name: Build solution
-          command: dotnet build --configuration Release src
+          command: dotnet build --configuration Release
       - persist_to_workspace:
           root: .
           paths: 
