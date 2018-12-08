@@ -10,5 +10,11 @@ namespace Feree.Option
             await prev is Some<TIn> some
                 ? await next(some) ?? OptionFactory.None<TOut>()
                 : OptionFactory.None<TOut>();
+        
+        public static async Task<Option<TOut>> BindAsync<TIn, TOut>(this Task<Option<TIn>> prev,
+            Func<TIn, Option<TOut>> next) =>
+            await prev is Some<TIn> some
+                ? next(some) ?? OptionFactory.None<TOut>()
+                : OptionFactory.None<TOut>();
     }
 }
