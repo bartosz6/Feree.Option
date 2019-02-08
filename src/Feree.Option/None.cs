@@ -13,5 +13,8 @@ namespace Feree.Option
             Task.FromResult(OptionFactory.None<TOut>());
         public override TOut Map<TOut>(Func<T, TOut> onSome, Func<TOut> onNone) => onNone();
         public override Task<TOut> MapAsync<TOut>(Func<T, Task<TOut>> onSome, Func<Task<TOut>> onNone) => onNone();
+        public override bool Equals(Option<T> other) => other is None<T>;
+        public override bool Equals(object obj) => obj is None<T>;
+        public override int GetHashCode() => 0;
     }
 }
